@@ -9,7 +9,7 @@ import (
 
 const defaultInput = `{"name":"Default"}`
 
-var input = flag.String("input", defaultInput, "the original string")
+var input = flag.String("input", defaultInput, "the original string of input")
 
 func main() {
 	flag.Parse()
