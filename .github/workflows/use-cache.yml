@@ -1,0 +1,36 @@
+name: Caching with go
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+
+      - name: Cache go mods
+        id: cache-go-mods
+        uses: actions/cache@v3
+        env:
+          cache-name: go-mods
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - if: ${{ steps.cache-go-mods.outputs.cache-hit != 'true' }}
+        name: List the module graph
+        continue-on-error: true
+        run: go mod graph
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Build
+        run: go build -o ac
+
+      - name: Test
+        run: ac
