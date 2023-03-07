@@ -36,3 +36,4 @@ jobs:
 
       - name: Run AC
         run: ./ac
+        run: echo ${{ github.sha }}
